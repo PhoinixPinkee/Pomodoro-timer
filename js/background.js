@@ -28,19 +28,11 @@ function createAlarm() {
 
 // Show notifications
 function createNotification(message) {
-    let iconPath = chrome.runtime.getURL("icons/timer-48.png"); // Ensure correct path
-
     chrome.notifications.create({
         type: "basic",
         title: "Pomodoro Timer",
         message: message,
-        iconUrl: iconPath // Use chrome.runtime.getURL()
-    }, function(notificationId) {
-        if (chrome.runtime.lastError) {
-            console.error("Notification Error:", chrome.runtime.lastError.message);
-        } else {
-            console.log("Notification created:", notificationId);
-        }
+        iconUrl: "icons/timer-48.png",
     });
 }
 
@@ -69,18 +61,13 @@ chrome.contextMenus.onClicked.addListener((info) => {
 });
 
 // Listen for messages from popup.js
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    console.log("Received message:", message);
-
+chrome.runtime.onMessage.addListener((message) => {
     if (message.action === "toggleTimer") {
-        createAlarm();
-        sendResponse({ status: "Timer started" });
+        toggleTimer();
     } else if (message.action === "resetTimer") {
-        clearAlarm();
-        sendResponse({ status: "Timer reset" });
+        resetTimer();
     }
 });
-
 
 // Toggle timer start/stop
 function toggleTimer() {
